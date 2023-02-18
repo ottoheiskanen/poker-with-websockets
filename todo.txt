@@ -13,3 +13,9 @@ what next?
 ------------
 - create player-, deck- and card-class and game objects array that gets
 rendered inside game loop
+
+
+
+bug fix ideas:
+-------------
+remove duplicates from gameObjects array on client side to avoid multiple viewports when someone leaves
