@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>poker-with-websockets</title>
+    <link rel="stylesheet" href="../public/styles.css">
+    <script defer src="../public/game.js"></script>
+</head>
+<body>
+    <h1>Poker with websockets</h1>
+    <div id="game-container">
+        <canvas id="game"></canvas>
+        <button type="submit" id="ready-button">Ready to check</button>
+        <button type="submit" id="change-button">Change cards</button>
+        <button type="submit" id="fold-button">Fold</button>
+        <textarea readonly id="stats-container">Welcome to room</textarea>
+
+        <div id="selected-cards">
+            <input type="checkbox" id="card1" name="card1" value="card" checked>
+            <label for="vehicle1"> null</label><br>
+            <input type="checkbox" id="card2" name="card2" value="card" checked>
+            <label for="vehicle2"> null</label><br>
+            <input type="checkbox" id="card3" name="card3" value="card" checked>
+            <label for="vehicle3"> null</label><br>
+            <input type="checkbox" id="card4" name="card4" value="card" checked>
+            <label for="vehicle3"> null</label><br>
+            <input type="checkbox" id="card5" name="card5" value="card" checked>
+            <label for="vehicle3"> null</label><br>
+        </div>
+        <div id="state-container">Player ones turn</div>
+    </div>
+    
+</body>
+</html>
