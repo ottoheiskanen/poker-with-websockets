@@ -1,6 +1,6 @@
 const socket = io('http://localhost:3000')
 import Player from "./Player.js"
-import { getCardInfo } from "./DOM.js"
+import { getCardInfo, statsContainer } from "./DOM.js"
 game.width = 640
 game.height = 480
 const ctx = game.getContext("2d")
@@ -22,17 +22,40 @@ socket.on('room-created', room => {
 
 socket.on('user-connected', (playerData) => {
     console.log(playerData)
+    statsContainer.value += "\n" + playerData.name + " joined the room"
+})
+
+// Show cards on player GUI 
+socket.on('update-gui', playerData => {
+    getCardInfo(playerData)
+})
+
+socket.on('send-data', (gameData) => {
+    //gameObjects = gameData
+    // id name room balance hand ready display position
+    for (let i = 0; i < gameData.length; i++) {
+        //gameObjects[i] = new Player(gameData[i])
+        let id = gameData[i].id
+        let name = gameData[i].name
+        let room = gameData[i].room
+        let balance = gameData[i].balance
+        let hand = gameData[i].hand
+        let ready = gameData[i].ready
+        let display = gameData[i].display
+        let position = gameData[i].position        
+        gameObjects[i] = new Player(id, name, room, balance, hand, ready, display, position)
+    }
 })
 
 function init() {
     const name = prompt('What is your name?')
     socket.emit('new-user', roomName, name)
 
-    gameObjects.push(new Player(1, "otto", "paska", 500, ['a5', 'a4', 'a3', 'a2', 'a1'], false, false, 1))
+    /*gameObjects.push(new Player(1, "otto", "paska", 500, ['a5', 'a4', 'a3', 'a2', 'a1'], false, false, 1))
     gameObjects.push(new Player(2, "ilari", "paska", 500, ['b5', 'b4', 'b3', 'b2', 'b1'], false, false, 2))
     gameObjects.push(new Player(3, "ville", "paska", 500, ['c5', 'c4', 'c3', 'c2', 'c1'], false, false, 3))
     gameObjects.push(new Player(4, "nakkeri", "paska", 500, ['d5', 'd4', 'd3', 'd2', 'd1'], false, false, 4))
-    getCardInfo(1, gameObjects)
+    */
     window.requestAnimationFrame(gameLoop)
 }
 

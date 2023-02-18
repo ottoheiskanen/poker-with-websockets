@@ -17,14 +17,10 @@ export const cl4 = document.getElementById("cl4")
 export const cl5 = document.getElementById("cl5")
 
 // Search for id that was returned from the server side and get right card values to checkboxs
-export function getCardInfo(id, gameObjects) {
-    for (let i = 0; i < gameObjects.length; i++) {
-        if (gameObjects[i].id === id) {
-            cl1.innerText = gameObjects[i].hand[0]
-            cl2.innerText = gameObjects[i].hand[1]
-            cl3.innerText = gameObjects[i].hand[2]
-            cl4.innerText = gameObjects[i].hand[3]
-            cl5.innerText = gameObjects[i].hand[4]
-        }
-    }
+export function getCardInfo(player) {
+    cl1.innerText = player.hand[0]
+    cl2.innerText = player.hand[1]
+    cl3.innerText = player.hand[2]
+    cl4.innerText = player.hand[3]
+    cl5.innerText = player.hand[4]
 }

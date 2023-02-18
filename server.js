@@ -50,16 +50,27 @@ io.on('connection', socket => {
         } else {
             clientList = []
         }
-        
+        // Debug
+        if (clientList.length > 4) {
+            console.log("Too many users in the room")
+        }
 
         let playerData = new PlayerData(socket.id, name, room, 500, rooms[room].deck.dealCards(5), false, false, clientList.length+1)
         socket.join(room)
         rooms[room].users[socket.id] = playerData
         io.sockets.in(room).emit('user-connected', playerData)
+        socket.emit('update-gui', playerData)
         console.log(playerData)
         console.log(rooms)
-    })    
+    })
     
+    setInterval(function() {
+        getUserRooms(socket).forEach(room => {
+            let gameData = gatherRoomData(room)
+            io.sockets.in(room).emit('send-data', gameData)
+        })
+    }, 1000)
+
     socket.on('disconnect', () => {
         getUserRooms(socket).forEach(room => {
             socket.to(room).emit('user-disconnected', rooms[room].users[socket.id])
@@ -67,6 +78,16 @@ io.on('connection', socket => {
         })
     })
 })
+
+function gatherRoomData(room){
+    let gameData = []
+    const clients = io.sockets.adapter.rooms.get( room );
+    clientList = Array.from( clients )
+    clientList.forEach(client => {
+        gameData.push(rooms[room].users[client])
+    })
+    return gameData
+}
 
 // Get room names
 function getUserRooms(socket) {
