@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>poker-with-websockets</title>
     <link rel="stylesheet" href="../public/styles.css">
-    <script defer src="../public/game.js"></script>
+    <script defer src="../public/DOM.js" type="module"></script>
+    <script defer src="../public/game.js" type="module"></script>
 </head>
 <body>
     <h1>Poker with websockets</h1>
@@ -19,15 +20,15 @@
 
         <div id="selected-cards">
             <input type="checkbox" id="card1" name="card1" value="card" checked>
-            <label for="vehicle1"> null</label><br>
+            <label id="cl1" for="card1"> null</label><br>
             <input type="checkbox" id="card2" name="card2" value="card" checked>
-            <label for="vehicle2"> null</label><br>
+            <label id="cl2" for="card2"> null</label><br>
             <input type="checkbox" id="card3" name="card3" value="card" checked>
-            <label for="vehicle3"> null</label><br>
+            <label id="cl3" for="card3"> null</label><br>
             <input type="checkbox" id="card4" name="card4" value="card" checked>
-            <label for="vehicle3"> null</label><br>
+            <label id="cl4" for="card4"> null</label><br>
             <input type="checkbox" id="card5" name="card5" value="card" checked>
-            <label for="vehicle3"> null</label><br>
+            <label id="cl5" for="card5"> null</label><br>
         </div>
         <div id="state-container">Player ones turn</div>
     </div>

@@ -1,0 +1,15 @@
+- server iterates every id and creates user list from them
+this array gets send to a client containing most latest information about players
+
+- after that the array data gets rendered to player's screen
+
+so we need:
+------------
+-setInterval emitter in server side
+-game loop in client side
+
+
+what next?
+------------
+- create player-, deck- and card-class and game objects array that gets
+rendered inside game loop
