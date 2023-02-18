@@ -25,6 +25,10 @@ socket.on('user-connected', (playerData) => {
     statsContainer.value += "\n" + playerData.name + " joined the room"
 })
 
+socket.on('user-disconnected', (playerData) => {
+    
+})
+
 // Show cards on player GUI 
 socket.on('update-gui', playerData => {
     getCardInfo(playerData)
