@@ -49,8 +49,8 @@ export default class Player {
 
     draw() {
         this.ctx.font  = "18px serif"
-        this.ctx.fillStyle = "black"
-        this.ctx.fillText(this.name, this.x, this.y-4)
+        this.ctx.fillStyle = "white"
+        this.ctx.fillText(this.name + "'s hand", this.x+275/4, this.y-4)
 
         
         for (let i = 0; i < this.hand.length; i++) {

@@ -26,7 +26,7 @@ socket.on('user-connected', (playerData) => {
 })
 
 socket.on('user-disconnected', (playerData) => {
-    
+    statsContainer.value += "\n" + playerData.name + " left the room" 
 })
 
 // Show cards on player GUI 

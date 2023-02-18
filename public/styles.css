@@ -23,7 +23,7 @@ h1 {
     display: block;
     width: 640px;
     height: 480px;
-    background-color: rgb(67, 119, 67);
+    background-image: url("res/background.png");
     position: absolute;
 }
 button {
@@ -93,7 +93,7 @@ button:hover {
     height: 18px;
     border-style:solid;
     border-width: 1px;
-    background-color: rgb(255, 246, 246);
+    background-color: rgb(94, 78, 78);
     position: absolute;
     top: 362px;
     text-align : center;

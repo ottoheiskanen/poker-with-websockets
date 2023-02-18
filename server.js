@@ -79,13 +79,20 @@ io.on('connection', socket => {
     })
 })
 
+// Gather all player data from the room and fix position before sending to client side
 function gatherRoomData(room){
     let gameData = []
     const clients = io.sockets.adapter.rooms.get( room );
     clientList = Array.from( clients )
-    clientList.forEach(client => {
+    /*clientList.forEach(client => {
+        rooms[room].users[client].position =
         gameData.push(rooms[room].users[client])
-    })
+    })*/
+    // Fix position on screen and move to 
+    for (let i = 0; i < clientList.length; i++) {
+        rooms[room].users[clientList[i]].position = i + 1
+        gameData.push(rooms[room].users[clientList[i]])
+    }
     return gameData
 }
 
