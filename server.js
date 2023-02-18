@@ -59,8 +59,8 @@ io.on('connection', socket => {
         socket.join(room)
         rooms[room].users[socket.id] = playerData
         io.sockets.in(room).emit('user-connected', playerData)
+        socket.emit('personal-id', socket.id)
         socket.emit('update-gui', playerData)
-        console.log(playerData)
         console.log(rooms)
     })
     
@@ -82,17 +82,21 @@ io.on('connection', socket => {
 // Gather all player data from the room and fix position before sending to client side
 function gatherRoomData(room){
     let gameData = []
+    let playersReady = 0
     const clients = io.sockets.adapter.rooms.get( room );
     clientList = Array.from( clients )
-    /*clientList.forEach(client => {
-        rooms[room].users[client].position =
-        gameData.push(rooms[room].users[client])
-    })*/
-    // Fix position on screen and move to 
+
+    // Fix positioning, count player's who are ready to check send data to client
     for (let i = 0; i < clientList.length; i++) {
         rooms[room].users[clientList[i]].position = i + 1
+        if (rooms[room].users[clientList[i]].ready) {
+            playersReady++
+        }
         gameData.push(rooms[room].users[clientList[i]])
     }
+    /*if (playersReady === clientList.length) {
+        io.sockets.in(room).emit('check-cards', gameData)
+    }*/
     return gameData
 }
 

@@ -1,3 +1,4 @@
+import { cardC, cardS, cardH, cardD, cardback } from "./DOM.js"
 export default class Player {
     constructor(id, name, room, balance, hand, ready, display, position) {
         this.id = id // set this to socket id
@@ -55,9 +56,29 @@ export default class Player {
         
         for (let i = 0; i < this.hand.length; i++) {
             this.ctx.fillStyle = "white"
-            this.ctx.fillRect(this.x + i * this.cardW, this.y, this.cardW-5, this.cardH)
+            //this.ctx.fillRect(this.x + i * this.cardW, this.y, this.cardW-5, this.cardH)
+            switch (this.hand[i][1]) {
+                case "h": this.ctx.drawImage(cardH, this.x + i * this.cardW, this.y, this.cardW, this.cardH); break;
+                case "d": this.ctx.drawImage(cardD, this.x + i * this.cardW, this.y, this.cardW, this.cardH); break;
+                case "c": this.ctx.drawImage(cardC, this.x + i * this.cardW, this.y, this.cardW, this.cardH); break;
+                case "s": this.ctx.drawImage(cardS, this.x + i * this.cardW, this.y, this.cardW, this.cardH); break;
+                default:
+                    this.ctx.fillStyle = "white"
+                    this.ctx.fillRect(this.x + i * this.cardW, this.y, this.cardW-5, this.cardH); break;
+            }
+            //this.ctx.drawImage(cardC,this.x + i * this.cardW, this.y, this.cardW, this.cardH)
             this.ctx.fillStyle = "black"
-            this.ctx.fillText(this.hand[i], this.x + (i * this.cardW), this.y+32)
+            this.ctx.fillText(this.hand[i][0], this.x + (i * this.cardW + (this.cardW/2-8)), this.y+32)
+        }
+    }
+
+    drawCardbacks() {
+        this.ctx.font  = "18px serif"
+        this.ctx.fillStyle = "white"
+        this.ctx.fillText(this.name + "'s hand", this.x+275/4, this.y-4)
+
+        for (let i = 0; i < this.hand.length; i++) {
+            this.ctx.drawImage(cardback, this.x + i * this.cardW, this.y, this.cardW, this.cardH)
         }
     }
 
