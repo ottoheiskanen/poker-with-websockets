@@ -22,12 +22,17 @@ socket.on('room-created', room => {
   })
 
 socket.on('user-connected', (playerData) => {
-    console.log(playerData)
     statsContainer.value += "\n" + playerData.name + " joined the room"
 })
 
 socket.on('user-disconnected', (playerData) => {
     statsContainer.value += "\n" + playerData.name + " left the room" 
+    // Remove leaver's id
+    for (let i = 0; i < gameObjects.length; i++) {
+        if (gameObjects[i].id === playerData.id) {
+            gameObjects.splice(i, 1)
+        }
+    }
 })
 
 // Show cards on player GUI 
@@ -37,7 +42,6 @@ socket.on('update-gui', playerData => {
 
 socket.on('personal-id', (socketID) => {
     myID = socketID
-    console.log(myID)
 })
 
 socket.on('send-data', (gameData) => {
@@ -78,6 +82,14 @@ function gameLoop(timeStamp) {
 function clear() {
     ctx.clearRect(0,0, game.width, game.height)
 }
+
+//Removes duplicates from gameObject array by using set...
+// this fixes the bug where viewport gets duplicated when player leaves from middle position
+/*function removeDuplicates() {
+    let objectSet = [...new Set( gameObjects )]
+    gameObjects = Array.from( objectSet )
+}*/
+
 
 function draw() {
     clear()
