@@ -1,32 +1,38 @@
-import Player from "../Player.js"
+const socket = io('http://localhost:3000')
+import Player from "./Player.js"
+import { getCardInfo } from "./DOM.js"
 game.width = 640
 game.height = 480
 const ctx = game.getContext("2d")
-let secondsPassed
-let oldTimeStamp
-let fps
+let secondsPassed = 0
+let oldTimeStamp = 0
+let fps = 0
 
 let gameObjects = []
 
-// Search for id that was returned from the server side and get right card values to checkboxs
-function getCardInfo(id) {
-    for (let i = 0; i < gameObjects.length; i++) {
-        if (gameObjects[i].id === id) {
-            cl1.innerText = gameObjects[i].hand[0]
-            cl2.innerText = gameObjects[i].hand[1]
-            cl3.innerText = gameObjects[i].hand[2]
-            cl4.innerText = gameObjects[i].hand[3]
-            cl5.innerText = gameObjects[i].hand[4]
-        }
-    }
-}
+socket.on('room-created', room => {
+    const roomElement = document.createElement('div')
+    roomElement.innerText = room
+    const roomLink = document.createElement('a')
+    roomLink.href = `/${room}`
+    roomLink.innerText = 'join'
+    roomContainer.append(roomElement)
+    roomContainer.append(roomLink)
+  })
+
+socket.on('user-connected', (playerData) => {
+    console.log(playerData)
+})
 
 function init() {
+    const name = prompt('What is your name?')
+    socket.emit('new-user', roomName, name)
+
     gameObjects.push(new Player(1, "otto", "paska", 500, ['a5', 'a4', 'a3', 'a2', 'a1'], false, false, 1))
     gameObjects.push(new Player(2, "ilari", "paska", 500, ['b5', 'b4', 'b3', 'b2', 'b1'], false, false, 2))
     gameObjects.push(new Player(3, "ville", "paska", 500, ['c5', 'c4', 'c3', 'c2', 'c1'], false, false, 3))
     gameObjects.push(new Player(4, "nakkeri", "paska", 500, ['d5', 'd4', 'd3', 'd2', 'd1'], false, false, 4))
-    getCardInfo(1)
+    getCardInfo(1, gameObjects)
     window.requestAnimationFrame(gameLoop)
 }
 
@@ -38,7 +44,7 @@ function gameLoop(timeStamp) {
     // Calculate fps
     fps = Math.round(1 / secondsPassed)
 
-    console.log(fps)
+    //console.log(fps)
 
     draw()
     window.requestAnimationFrame(gameLoop)

@@ -18,10 +18,10 @@ export default class Player {
                 this.y = 20; break;
             case 2:
                 this.x = 20
-                this.y = 160; break;
+                this.y = 145; break;
             case 3: 
                 this.x = 375
-                this.y = 160; break;
+                this.y = 145; break;
             case 4: 
                 this.x = 204
                 this.y = 268; break;
@@ -62,5 +62,3 @@ export default class Player {
     }
 
 }
-
-//module.exports = Player
