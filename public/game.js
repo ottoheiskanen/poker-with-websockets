@@ -23,10 +23,17 @@ socket.on('room-created', room => {
 
 socket.on('user-connected', (playerData) => {
     statsContainer.value += "\n" + playerData.name + " joined the room"
+    statsContainer.scrollTop = statsContainer.scrollHeight
+})
+
+socket.on('announce-winner', (winner, winnerName) => {
+    statsContainer.value += "\n" + winnerName + " wins with " + winner[0].descr + "!"
+    statsContainer.scrollTop = statsContainer.scrollHeight
 })
 
 socket.on('user-disconnected', (playerData) => {
     statsContainer.value += "\n" + playerData.name + " left the room" 
+    statsContainer.scrollTop = statsContainer.scrollHeight
     // Remove leaver's id
     for (let i = 0; i < gameObjects.length; i++) {
         if (gameObjects[i].id === playerData.id) {
@@ -90,29 +97,11 @@ function clear() {
     ctx.clearRect(0,0, game.width, game.height)
 }
 
-//Removes duplicates from gameObject array by using set...
-// this fixes the bug where viewport gets duplicated when player leaves from middle position
-/*function removeDuplicates() {
-    let objectSet = [...new Set( gameObjects )]
-    gameObjects = Array.from( objectSet )
-}*/
-
-/*function displayTimer() {
-    let playersReady = 0
-    gameObjects.forEach(player => {
-        if (player.display) {
-            playersReady++
-        }
-    })
-
-    if (playersReady === gameObjects.length) {
-        setTimeout
-    }
-}*/
 let displayTimer = 500
 
 function draw() {
     clear()
+    // Loop through the game objects
     for (let i = 0; i < gameObjects.length; i++) {
         if (gameObjects[i].id === myID && gameObjects[i].display === false) {
             gameObjects[i].update()

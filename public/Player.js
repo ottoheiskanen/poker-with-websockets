@@ -32,13 +32,9 @@ export default class Player {
         }
 
         this.ctx = document.getElementById("game").getContext("2d");
-
         this.cardW = 50
         this.cardH = 75
-
         this.switch = [] 
-
-        //this.displayCounter = 0
     }
 
     move() {

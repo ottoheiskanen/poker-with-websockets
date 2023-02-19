@@ -25,7 +25,8 @@ app.post('/room', (req, res) => {
 
     rooms[req.body.room] = {
         users: {},
-        deck: new Deck()
+        deck: new Deck(),
+        newGame: false
     }
 
     res.redirect(req.body.room)
@@ -66,7 +67,20 @@ io.on('connection', socket => {
     
     setInterval(function() {
         getUserRooms(socket).forEach(room => {
+
             let [gameData, check] = gatherRoomData(room)
+
+            // Start new game
+            if (rooms[room].newGame) {
+                rooms[room].deck = new Deck()
+                
+                gameData.forEach(player => {
+                    player.hand = rooms[room].deck.dealCards(5)
+                })
+
+                rooms[room].newGame = false
+            }
+
             // if all players are ready to check their cards
             if (check) {
                 gameData.forEach(player => {
@@ -89,11 +103,24 @@ io.on('connection', socket => {
     socket.on('update-player-state', (room) => {
         const clients = io.sockets.adapter.rooms.get( room );
         let clientList = Array.from( clients )
+
         clientList.forEach(client => {
             rooms[room].users[client].ready = false
             rooms[room].users[client].display = false
         })
+
+        const winner = solveHands(clientList, room)
+        const winnerName = parseWinnerData(winner, clientList, room)
+
+        //io.sockets.in(room).emit('announce-winner', winner, winnerName)
+        socket.emit('announce-winner', winner, winnerName)
+        rooms[room].newGame = true
     })
+
+    /*socket.on('new-game', room => {
+        rooms[room].deck = new Deck()
+        rooms[room].users[socket.id].hand = rooms[room].deck.dealCards(5)
+    })*/
 
     // When client disconnects; delete from room
     socket.on('disconnect', () => {
@@ -103,6 +130,40 @@ io.on('connection', socket => {
         })
     })
 })
+
+function solveHands(clientList, room) {
+    let hands = []
+    for (let i = 0; i < clientList.length; i++) {
+        hands.push(Hand.solve(rooms[room].users[clientList[i]].hand))
+    }
+    const winner = Hand.winners( hands )
+    return winner
+}
+
+function parseWinnerData(winner, clientList, room) {
+    let rawCardData = Array.from( winner[0].cards)
+    let cardData = []
+    let winnerName = ""
+
+    for (let i = 0; i < rawCardData.length; i++) {
+        let card = rawCardData[i].value + rawCardData[i].suit
+        cardData.push(card)
+    }
+
+    clientList.forEach(client => {
+        // Since pokersolver algorithm rearranges cards by value, we cant directly
+        // check if player's hand and winner's hand are equal so we do this ugly looking comparison...
+        // This could probably be done by checking just one card since deck's are unique but lets go with this for now
+        if (rooms[room].users[client].hand.includes(cardData[0]) &&
+        rooms[room].users[client].hand.includes(cardData[1])) {
+            winnerName = rooms[room].users[client].name
+            rooms[room].users[client].balance += 25 * (clientList.length - 1)
+        } else {
+            rooms[room].users[client].balance -= 25
+        }
+    })
+    return winnerName
+}
 
 // Gather all player data from the room and fix position before sending to client side
 function gatherRoomData(room){

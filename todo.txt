@@ -11,22 +11,31 @@ so we need:
 
 what next?
 ------------
--instead of recreating objects everytime, add some conditions to check if they already exists and change their values accordingly
-    (socket.on 'send-data') espesially
+- add poker hand evaluation and 'new game' -feature, announce winner on statContainer 
+and update player balances accordingly
 
 -add button events
     priority:
     ---------
-    1) readyButton
+    1) readyButton (DONE)
     2) changeButton
     3) foldButton
 
+
+thinking...
+------------
+should the timer come from server? it seems like 'the first timer to set on' logic is messing up new game start
 
 bug fix ideas:
 -------------
 remove duplicates from gameObjects array on client side to avoid multiple viewports when someone leaves (DONE)
 redirect players if room is full
 remove empty rooms
+
+unknown bugs:
+---------------
+something got messed up when announcing winner - winner didnt match between players
+-something to do with 'update-player-state' or pokersolver algorithm???
 
 additional:
 -----------
