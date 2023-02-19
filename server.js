@@ -66,11 +66,36 @@ io.on('connection', socket => {
     
     setInterval(function() {
         getUserRooms(socket).forEach(room => {
-            let gameData = gatherRoomData(room)
+            let [gameData, check] = gatherRoomData(room)
+            // if all players are ready to check their cards
+            if (check) {
+                gameData.forEach(player => {
+                    player.display = true
+                })
+            }
             io.sockets.in(room).emit('send-data', gameData)
         })
     }, 1000)
 
+    // When client clicks readyButton...
+    socket.on('ready-to-check', () => {
+        getUserRooms(socket).forEach(room => {
+            rooms[room].users[socket.id].ready = true
+            console.log(rooms[room].users[socket.id])
+        })
+    })
+
+    // Sets all clients display to false after first client's displayTimer has set on
+    socket.on('update-player-state', (room) => {
+        const clients = io.sockets.adapter.rooms.get( room );
+        let clientList = Array.from( clients )
+        clientList.forEach(client => {
+            rooms[room].users[client].ready = false
+            rooms[room].users[client].display = false
+        })
+    })
+
+    // When client disconnects; delete from room
     socket.on('disconnect', () => {
         getUserRooms(socket).forEach(room => {
             socket.to(room).emit('user-disconnected', rooms[room].users[socket.id])
@@ -83,10 +108,11 @@ io.on('connection', socket => {
 function gatherRoomData(room){
     let gameData = []
     let playersReady = 0
+    let check = false
     const clients = io.sockets.adapter.rooms.get( room );
     clientList = Array.from( clients )
 
-    // Fix positioning, count player's who are ready to check send data to client
+    // Fix positioning, count player's who are ready to check and return data that is ready to be sent to client
     for (let i = 0; i < clientList.length; i++) {
         rooms[room].users[clientList[i]].position = i + 1
         if (rooms[room].users[clientList[i]].ready) {
@@ -94,10 +120,10 @@ function gatherRoomData(room){
         }
         gameData.push(rooms[room].users[clientList[i]])
     }
-    /*if (playersReady === clientList.length) {
-        io.sockets.in(room).emit('check-cards', gameData)
-    }*/
-    return gameData
+    if (playersReady === clientList.length) {
+        check = true
+    }
+    return [gameData, check]
 }
 
 // Get room names

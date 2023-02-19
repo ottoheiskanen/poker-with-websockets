@@ -26,6 +26,9 @@ export default class Player {
             case 4: 
                 this.x = 204
                 this.y = 268; break;
+            default:
+                this.x = 204
+                this.y = 20; break;
         }
 
         this.ctx = document.getElementById("game").getContext("2d");
@@ -34,6 +37,8 @@ export default class Player {
         this.cardH = 75
 
         this.switch = [] 
+
+        //this.displayCounter = 0
     }
 
     move() {
@@ -45,7 +50,14 @@ export default class Player {
     }
 
     update() {
-        
+        // Show cards for awhile before going to next game
+        /*if (this.display && this.displayCounter < 250) {
+            this.displayCounter++
+            console.log(this.displayCounter)
+        } else {
+            this.display = false
+            this.displayCounter = 0
+        }*/
     }
 
     draw() {

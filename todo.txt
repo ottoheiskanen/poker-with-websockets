@@ -11,11 +11,23 @@ so we need:
 
 what next?
 ------------
-- create player-, deck- and card-class and game objects array that gets
-rendered inside game loop
+-instead of recreating objects everytime, add some conditions to check if they already exists and change their values accordingly
+    (socket.on 'send-data') espesially
 
+-add button events
+    priority:
+    ---------
+    1) readyButton
+    2) changeButton
+    3) foldButton
 
 
 bug fix ideas:
 -------------
-remove duplicates from gameObjects array on client side to avoid multiple viewports when someone leaves
+remove duplicates from gameObjects array on client side to avoid multiple viewports when someone leaves (DONE)
+redirect players if room is full
+remove empty rooms
+
+additional:
+-----------
+change room filling order bot-top-left-right

@@ -1,6 +1,6 @@
 const socket = io('http://localhost:3000')
 import Player from "./Player.js"
-import { getCardInfo, statsContainer } from "./DOM.js"
+import { getCardInfo, statsContainer, readyButton } from "./DOM.js"
 game.width = 640
 game.height = 480
 const ctx = game.getContext("2d")
@@ -55,8 +55,15 @@ socket.on('send-data', (gameData) => {
         let ready = gameData[i].ready
         let display = gameData[i].display
         let position = gameData[i].position        
+
         gameObjects[i] = new Player(id, name, room, balance, hand, ready, display, position)
     }
+})
+
+// When you are ready to check cards...
+readyButton.addEventListener('click', e => {
+    e.preventDefault()
+    socket.emit('ready-to-check')
 })
 
 function init() {
@@ -90,6 +97,19 @@ function clear() {
     gameObjects = Array.from( objectSet )
 }*/
 
+/*function displayTimer() {
+    let playersReady = 0
+    gameObjects.forEach(player => {
+        if (player.display) {
+            playersReady++
+        }
+    })
+
+    if (playersReady === gameObjects.length) {
+        setTimeout
+    }
+}*/
+let displayTimer = 500
 
 function draw() {
     clear()
@@ -101,8 +121,16 @@ function draw() {
             gameObjects[i].update()
             gameObjects[i].drawCardbacks()
         } else if (gameObjects[i].display) {
+            displayTimer--
+            console.log(displayTimer)
             gameObjects[i].update()
             gameObjects[i].draw()
+            if (displayTimer < 1) {
+                gameObjects[i].ready = false
+                gameObjects[i].display = false
+                socket.emit('update-player-state', roomName)
+                displayTimer = 500
+            }
         }
     }
 }
