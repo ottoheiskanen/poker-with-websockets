@@ -1,6 +1,6 @@
 const socket = io('http://localhost:3000')
 import Player from "./Player.js"
-import { getCardInfo, statsContainer, readyButton } from "./DOM.js"
+import { getCardInfo, statsContainer, readyButton, changeButton, c1, c2, c3, c4, c5} from "./DOM.js"
 game.width = 640
 game.height = 480
 const ctx = game.getContext("2d")
@@ -9,7 +9,9 @@ let oldTimeStamp = 0
 let fps = 0
 
 let gameObjects = []
-let myID
+let myID = null
+let player = null
+let hasChanged = false
 
 socket.on('room-created', room => {
     const roomElement = document.createElement('div')
@@ -61,7 +63,12 @@ socket.on('send-data', (gameData) => {
         let hand = gameData[i].hand
         let ready = gameData[i].ready
         let display = gameData[i].display
-        let position = gameData[i].position        
+        let position = gameData[i].position
+        
+        // update self to ease future referencing
+        if (gameData[i].id === myID) {
+            player = gameData[i]
+        }
 
         gameObjects[i] = new Player(id, name, room, balance, hand, ready, display, position)
     }
@@ -70,7 +77,28 @@ socket.on('send-data', (gameData) => {
 // When you are ready to check cards...
 readyButton.addEventListener('click', e => {
     e.preventDefault()
-    socket.emit('ready-to-check')
+    if (player !== null) {
+        if (!player.ready) {
+            socket.emit('ready-to-check')
+        }
+    } 
+})
+
+// Get unselected cards and change them on changeButton click
+changeButton.addEventListener('click', e => {
+    e.preventDefault()
+    let cardsToChange = [0,0,0,0,0]
+    if (player !== null) {
+        if (!hasChanged && !player.ready) {
+            if (!c1.checked) cardsToChange[0] = 1
+            if (!c2.checked) cardsToChange[1] = 1
+            if (!c3.checked) cardsToChange[2] = 1
+            if (!c4.checked) cardsToChange[3] = 1
+            if (!c5.checked) cardsToChange[4] = 1
+            socket.emit('change-cards', cardsToChange)
+            hasChanged = true
+        }
+    }
 })
 
 function init() {
@@ -119,6 +147,7 @@ function draw() {
                 gameObjects[i].display = false
                 socket.emit('update-player-state', roomName)
                 displayTimer = 500
+                hasChanged = false
             }
         }
     }

@@ -73,9 +73,11 @@ io.on('connection', socket => {
             // Start new game
             if (rooms[room].newGame) {
                 rooms[room].deck = new Deck()
-                
+        
                 gameData.forEach(player => {
                     player.hand = rooms[room].deck.dealCards(5)
+                    //update GUI values after cards have been changed
+                    io.to(player.id).emit('update-gui', player)
                 })
 
                 rooms[room].newGame = false
@@ -98,8 +100,19 @@ io.on('connection', socket => {
             console.log(rooms[room].users[socket.id])
         })
     })
+    
+    socket.on('change-cards', (cardsToChange) => {
+        getUserRooms(socket).forEach(room => {
+            for (let i = 0; i < cardsToChange.length; i++) {
+                if (cardsToChange[i] === 1) {
+                    rooms[room].users[socket.id].hand[i] = rooms[room].deck.dealCards(1).toString()
+                }
+            }
+            socket.emit('update-gui', rooms[room].users[socket.id])
+        })
+    })
 
-    // Sets all clients display to false after first client's displayTimer has set on
+    // Sets all clients 'display' to false after first client's displayTimer has set on
     socket.on('update-player-state', (room) => {
         const clients = io.sockets.adapter.rooms.get( room );
         let clientList = Array.from( clients )

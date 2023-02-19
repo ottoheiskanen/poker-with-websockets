@@ -11,14 +11,16 @@ so we need:
 
 what next?
 ------------
+-add fold option
+
 - add poker hand evaluation and 'new game' -feature, announce winner on statContainer 
-and update player balances accordingly
+and update player balances accordingly (PARTLY DONE)
 
 -add button events
     priority:
     ---------
     1) readyButton (DONE)
-    2) changeButton
+    2) changeButton (DONE)
     3) foldButton
 
 
