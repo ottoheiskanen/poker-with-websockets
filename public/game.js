@@ -1,6 +1,6 @@
 const socket = io('http://localhost:3000')
 import Player from "./Player.js"
-import { getCardInfo, statsContainer, readyButton, changeButton, c1, c2, c3, c4, c5} from "./DOM.js"
+import { getCardInfo, statsContainer, readyButton, changeButton, foldButton, c1, c2, c3, c4, c5} from "./DOM.js"
 game.width = 640
 game.height = 480
 const ctx = game.getContext("2d")
@@ -97,6 +97,16 @@ changeButton.addEventListener('click', e => {
             if (!c5.checked) cardsToChange[4] = 1
             socket.emit('change-cards', cardsToChange)
             hasChanged = true
+        }
+    }
+})
+
+foldButton.addEventListener('click', e => {
+    e.preventDefault()
+    if (player !== null) {
+        if (!player.ready) {
+            socket.emit('fold')
+            player.ready = true
         }
     }
 })

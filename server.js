@@ -112,6 +112,13 @@ io.on('connection', socket => {
         })
     })
 
+    socket.on('fold', () => {
+        getUserRooms(socket).forEach(room => {
+            rooms[room].users[socket.id].hand = []
+            rooms[room].users[socket.id].ready =  true
+        })
+    })
+
     // Sets all clients 'display' to false after first client's displayTimer has set on
     socket.on('update-player-state', (room) => {
         const clients = io.sockets.adapter.rooms.get( room );
@@ -147,6 +154,11 @@ io.on('connection', socket => {
 function solveHands(clientList, room) {
     let hands = []
     for (let i = 0; i < clientList.length; i++) {
+        // check if player has folded their hand so empty entries dont cause error
+        if (rooms[room].users[clientList[i]].hand === undefined ||
+            rooms[room].users[clientList[i]].hand.length == 0) {
+                continue
+            }
         hands.push(Hand.solve(rooms[room].users[clientList[i]].hand))
     }
     const winner = Hand.winners( hands )
