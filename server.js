@@ -130,17 +130,15 @@ io.on('connection', socket => {
         })
 
         const winner = solveHands(clientList, room)
-        const winnerName = parseWinnerData(winner, clientList, room)
 
-        //io.sockets.in(room).emit('announce-winner', winner, winnerName)
-        socket.emit('announce-winner', winner, winnerName)
-        rooms[room].newGame = true
+        if (winner === undefined || winner.length == 0) {
+            rooms[room].newGame = true
+        } else {
+            const winnerName = parseWinnerData(winner, clientList, room)
+            socket.emit('announce-winner', winner, winnerName)
+            rooms[room].newGame = true
+        }
     })
-
-    /*socket.on('new-game', room => {
-        rooms[room].deck = new Deck()
-        rooms[room].users[socket.id].hand = rooms[room].deck.dealCards(5)
-    })*/
 
     // When client disconnects; delete from room
     socket.on('disconnect', () => {
@@ -188,6 +186,7 @@ function parseWinnerData(winner, clientList, room) {
         }
     })
     return winnerName
+
 }
 
 // Gather all player data from the room and fix position before sending to client side
