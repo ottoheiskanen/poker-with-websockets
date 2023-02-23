@@ -145,6 +145,11 @@ io.on('connection', socket => {
         getUserRooms(socket).forEach(room => {
             socket.to(room).emit('user-disconnected', rooms[room].users[socket.id])
             delete rooms[room].users[socket.id]
+            const clients = io.sockets.adapter.rooms.get( room );
+            if (clients === undefined || clients.length == 0) {
+                delete rooms[room]
+                console.log(rooms)
+            }
         })
     })
 })
