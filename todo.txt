@@ -9,6 +9,8 @@ so we need:
 -game loop in client side
 
 
+-- USE BREAKS IN FOR LOOPS!!!
+
 what next?
 ------------
 -add fold option

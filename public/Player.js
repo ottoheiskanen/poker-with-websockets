@@ -56,6 +56,9 @@ export default class Player {
         }*/
     }
 
+    animation() {
+    }
+
     draw() {
         this.ctx.font  = "18px serif"
         this.ctx.fillStyle = "white"

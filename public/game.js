@@ -13,6 +13,11 @@ let myID = null
 let player = null
 let hasChanged = false
 
+function displayMessage(name, label) {
+    statsContainer.value += "\n" + name + label
+    statsContainer.scrollTop = statsContainer.scrollHeight
+}
+
 socket.on('room-created', room => {
     const roomElement = document.createElement('div')
     roomElement.innerText = room
@@ -24,18 +29,15 @@ socket.on('room-created', room => {
   })
 
 socket.on('user-connected', (playerData) => {
-    statsContainer.value += "\n" + playerData.name + " joined the room"
-    statsContainer.scrollTop = statsContainer.scrollHeight
+    displayMessage(playerData.name, " joined the room")
 })
 
 socket.on('announce-winner', (winner, winnerName) => {
-    statsContainer.value += "\n" + winnerName + " wins with " + winner[0].descr + "!"
-    statsContainer.scrollTop = statsContainer.scrollHeight
+    displayMessage(winnerName, ` wins with ${winner[0].descr}!`)
 })
 
 socket.on('user-disconnected', (playerData) => {
-    statsContainer.value += "\n" + playerData.name + " left the room" 
-    statsContainer.scrollTop = statsContainer.scrollHeight
+    displayMessage(playerData.name, " left the room!")
     // Remove leaver's id
     for (let i = 0; i < gameObjects.length; i++) {
         if (gameObjects[i].id === playerData.id) {
@@ -64,13 +66,13 @@ socket.on('send-data', (gameData) => {
         let ready = gameData[i].ready
         let display = gameData[i].display
         let position = gameData[i].position
-        
-        // update self to ease future referencing
-        if (gameData[i].id === myID) {
-            player = gameData[i]
-        }
 
         gameObjects[i] = new Player(id, name, room, balance, hand, ready, display, position)
+
+        // update self to ease future referencing
+        if (gameObjects[i].id === myID) {
+            player = gameObjects[i]
+        }
     }
 })
 
@@ -118,15 +120,9 @@ function init() {
 }
 
 function gameLoop(timeStamp) {
-    // Calculate the number of seconds passed since the last frame
     secondsPassed = (timeStamp - oldTimeStamp) / 1000
     oldTimeStamp = timeStamp
-
-    // Calculate fps
     fps = Math.round(1 / secondsPassed)
-
-    //console.log(fps)
-
     draw()
     window.requestAnimationFrame(gameLoop)
 }
@@ -149,7 +145,7 @@ function draw() {
             gameObjects[i].drawCardbacks()
         } else if (gameObjects[i].display) {
             displayTimer--
-            console.log(displayTimer)
+            gameObjects[i].animation()
             gameObjects[i].update()
             gameObjects[i].draw()
             if (displayTimer < 1) {
