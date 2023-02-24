@@ -37,23 +37,7 @@ export default class Player {
         this.switch = [] 
     }
 
-    move() {
-        
-    }
-
-    switchCards(newCards = []) {
-
-    }
-
     update() {
-        // Show cards for awhile before going to next game
-        /*if (this.display && this.displayCounter < 250) {
-            this.displayCounter++
-            console.log(this.displayCounter)
-        } else {
-            this.display = false
-            this.displayCounter = 0
-        }*/
     }
 
     animation() {
@@ -62,12 +46,11 @@ export default class Player {
     draw() {
         this.ctx.font  = "18px serif"
         this.ctx.fillStyle = "white"
-        this.ctx.fillText(this.name + "'s hand", this.x+275/4, this.y-4)
+        this.ctx.fillText(this.name + "'s hand" + ` [${this.balance}]`, this.x+275/4, this.y-4)
 
         
         for (let i = 0; i < this.hand.length; i++) {
             this.ctx.fillStyle = "white"
-            //this.ctx.fillRect(this.x + i * this.cardW, this.y, this.cardW-5, this.cardH)
             switch (this.hand[i][1]) {
                 case "h": this.ctx.drawImage(cardH, this.x + i * this.cardW, this.y, this.cardW, this.cardH); break;
                 case "d": this.ctx.drawImage(cardD, this.x + i * this.cardW, this.y, this.cardW, this.cardH); break;
@@ -77,7 +60,6 @@ export default class Player {
                     this.ctx.fillStyle = "white"
                     this.ctx.fillRect(this.x + i * this.cardW, this.y, this.cardW-5, this.cardH); break;
             }
-            //this.ctx.drawImage(cardC,this.x + i * this.cardW, this.y, this.cardW, this.cardH)
             this.ctx.fillStyle = "black"
             this.ctx.fillText(this.hand[i][0], this.x + (i * this.cardW + (this.cardW/2-8)), this.y+32)
         }
@@ -86,7 +68,7 @@ export default class Player {
     drawCardbacks() {
         this.ctx.font  = "18px serif"
         this.ctx.fillStyle = "white"
-        this.ctx.fillText(this.name + "'s hand", this.x+275/4, this.y-4)
+        this.ctx.fillText(this.name + "'s hand" + ` [${this.balance}]`, this.x+275/4, this.y-4)
 
         for (let i = 0; i < this.hand.length; i++) {
             this.ctx.drawImage(cardback, this.x + i * this.cardW, this.y, this.cardW, this.cardH)

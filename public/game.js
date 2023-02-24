@@ -1,5 +1,6 @@
 const socket = io('http://localhost:3000')
 import Player from "./Player.js"
+import Timer from "./Timer.js"
 import { getCardInfo, statsContainer, readyButton, changeButton, foldButton, c1, c2, c3, c4, c5} from "./DOM.js"
 game.width = 640
 game.height = 480
@@ -12,6 +13,8 @@ let gameObjects = []
 let myID = null
 let player = null
 let hasChanged = false
+
+let timerObject
 
 function displayMessage(name, label) {
     statsContainer.value += "\n" + name + label
@@ -115,6 +118,9 @@ foldButton.addEventListener('click', e => {
 
 function init() {
     const name = prompt('What is your name?')
+
+    timerObject = new Timer(game.width/2, (game.height-120) / 2, 25, 0, 100, "white")
+
     socket.emit('new-user', roomName, name)
     window.requestAnimationFrame(gameLoop)
 }
@@ -145,6 +151,7 @@ function draw() {
             gameObjects[i].drawCardbacks()
         } else if (gameObjects[i].display) {
             displayTimer--
+            timerObject.render(displayTimer / 5)
             gameObjects[i].animation()
             gameObjects[i].update()
             gameObjects[i].draw()

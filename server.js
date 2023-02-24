@@ -42,19 +42,20 @@ app.get('/:room', (req, res) => {
 
 server.listen( PORT )
 
+function getClients(room) {
+    let clientList
+    const clients = io.sockets.adapter.rooms.get( room )
+    if (clients !== undefined) {
+        clientList = Array.from( clients )
+    } else {
+        clientList = []
+    }
+    return [clients, clientList]
+}
+
 io.on('connection', socket => {
     socket.on('new-user', (room, name) => {
-        let clientList 
-        const clients = io.sockets.adapter.rooms.get( room );
-        if (clients !== undefined) {
-            clientList = Array.from( clients )
-        } else {
-            clientList = []
-        }
-        // Debug
-        if (clientList.length > 4) {
-            console.log("Too many users in the room")
-        }
+        let [clients, clientList] = getClients(room)
 
         let playerData = new PlayerData(socket.id, name, room, 500, rooms[room].deck.dealCards(5), false, false, clientList.length+1)
         socket.join(room)
@@ -121,8 +122,7 @@ io.on('connection', socket => {
 
     // Sets all clients 'display' to false after first client's displayTimer has set on
     socket.on('update-player-state', (room) => {
-        const clients = io.sockets.adapter.rooms.get( room );
-        let clientList = Array.from( clients )
+        let [clients, clientList] = getClients(room)
 
         clientList.forEach(client => {
             rooms[room].users[client].ready = false
@@ -145,8 +145,8 @@ io.on('connection', socket => {
         getUserRooms(socket).forEach(room => {
             socket.to(room).emit('user-disconnected', rooms[room].users[socket.id])
             delete rooms[room].users[socket.id]
-            const clients = io.sockets.adapter.rooms.get( room );
-            if (clients === undefined || clients.length == 0) {
+            let [clients, clientList] = getClients(room)
+            if (clients === undefined || clients.length == 0) { //size or len
                 delete rooms[room]
                 console.log(rooms)
             }
@@ -199,8 +199,7 @@ function gatherRoomData(room){
     let gameData = []
     let playersReady = 0
     let check = false
-    const clients = io.sockets.adapter.rooms.get( room );
-    clientList = Array.from( clients )
+    let [clients, clientList] = getClients(room)
 
     // Fix positioning, count player's who are ready to check and return data that is ready to be sent to client
     for (let i = 0; i < clientList.length; i++) {
