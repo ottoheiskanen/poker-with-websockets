@@ -57,13 +57,18 @@ io.on('connection', socket => {
     socket.on('new-user', (room, name) => {
         let [clients, clientList] = getClients(room)
 
-        let playerData = new PlayerData(socket.id, name, room, 500, rooms[room].deck.dealCards(5), false, false, clientList.length+1)
-        socket.join(room)
-        rooms[room].users[socket.id] = playerData
-        io.sockets.in(room).emit('user-connected', playerData)
-        socket.emit('personal-id', socket.id)
-        socket.emit('update-gui', playerData)
-        console.log(rooms)
+        if (clientList.length < 4) {
+            let playerData = new PlayerData(socket.id, name, room, 500, rooms[room].deck.dealCards(5), false, false, clientList.length+1)
+            socket.join(room)
+            rooms[room].users[socket.id] = playerData
+            io.sockets.in(room).emit('user-connected', playerData)
+            socket.emit('personal-id', socket.id)
+            socket.emit('update-gui', playerData)
+            console.log(rooms)
+        } else {
+            const message = "Room is full, you will be redirected to the main page"
+            socket.emit('full-room', message)
+        }
     })
     
     setInterval(function() {

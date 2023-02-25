@@ -33,10 +33,16 @@ socket.on('room-created', room => {
 
 socket.on('user-connected', (playerData) => {
     displayMessage(playerData.name, " joined the room")
+    console.log(playerData)
 })
 
 socket.on('announce-winner', (winner, winnerName) => {
     displayMessage(winnerName, ` wins with ${winner[0].descr}!`)
+})
+
+socket.on('full-room', message => {
+    alert(message)
+    document.location.href = "/"
 })
 
 socket.on('user-disconnected', (playerData) => {
