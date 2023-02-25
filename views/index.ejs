@@ -5,19 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>poker lobby</title>
+  <link rel="stylesheet" href="menu.css">
+  <script defer src="menu.js"></script>
   <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
   <!-- <script defer src="game.js" type = "module"> </script> -->
 </head>
 <body>
-  <div id="room-container">
-    <% Object.keys(rooms).forEach(room => { %>
-      <div><%= room %> </div>
-      <a href="/<%= room %>">Join</a>
-    <% }) %>
+  <div id="menu-container">
+
+    <div id="room-container">
+
+      <h2>Active rooms:</h2>
+      <div id="room-list">
+
+        <% Object.keys(rooms).forEach(room => { %>
+          <div><%= room %> 
+            <a href="\<%= room %>">Join</a>
+          </div>
+          
+        <% }) %>
+
+      </div>
+
+      <form id="new-room-form" action="/room" method="POST">
+        <input name="room" type="text" required maxlength="15">
+        <button type="submit">New Room</button>
+      </form>
+
+    </div>    
   </div>
-  <form action="/room" method="POST">
-    <input name="room" type="text" required>
-    <button type="submit">New Room</button>
-  </form>
+
+
 </body>
 </html>
