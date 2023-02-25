@@ -1,3 +1,7 @@
+* {
+    font-family:'Courier New', Courier, monospace;
+}
+
 .noselect {
     cursor: default;
     -webkit-user-select: none;

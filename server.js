@@ -58,7 +58,7 @@ io.on('connection', socket => {
         let [clients, clientList] = getClients(room)
 
         if (clientList.length < 4) {
-            let playerData = new PlayerData(socket.id, name, room, 500, rooms[room].deck.dealCards(5), false, false, clientList.length+1)
+            let playerData = new PlayerData(socket.id, name, room, 5000, rooms[room].deck.dealCards(5), false, false, clientList.length+1)
             socket.join(room)
             rooms[room].users[socket.id] = playerData
             io.sockets.in(room).emit('user-connected', playerData)
@@ -99,7 +99,6 @@ io.on('connection', socket => {
         })
     }, 1000)
 
-    // When client clicks readyButton...
     socket.on('ready-to-check', () => {
         getUserRooms(socket).forEach(room => {
             rooms[room].users[socket.id].ready = true

@@ -11,7 +11,7 @@ class Deck {
     dealCards(amount) {
         let cards = []
         for (let i = 0; i < amount; i++) {
-            let index = Math.floor(Math.random() * this.deck.length) // -1???
+            let index = Math.floor(Math.random() * this.deck.length)
             cards.push(this.deck[index])
             this.deck.splice(index, 1)
         }   

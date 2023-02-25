@@ -40,7 +40,6 @@ body {
     height: 40px;
     width: 80px;
     border-style: none;
-    border-radius: 12.5%;
     color: white;
     cursor: pointer;
 }
@@ -50,7 +49,6 @@ body {
     height: 40px;
     width: 160px;
     border-style: none;
-    border-radius: 12.5%;
     color: black;
     cursor: pointer;
 }

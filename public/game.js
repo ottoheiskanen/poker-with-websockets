@@ -33,7 +33,6 @@ socket.on('room-created', room => {
 
 socket.on('user-connected', (playerData) => {
     displayMessage(playerData.name, " joined the room")
-    console.log(playerData)
 })
 
 socket.on('announce-winner', (winner, winnerName) => {
@@ -65,7 +64,6 @@ socket.on('personal-id', (socketID) => {
 })
 
 socket.on('send-data', (gameData) => {
-    // id name room balance hand ready display position
     for (let i = 0; i < gameData.length; i++) {
         let id = gameData[i].id
         let name = gameData[i].name

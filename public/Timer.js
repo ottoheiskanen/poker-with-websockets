@@ -10,10 +10,6 @@ export default class Timer {
         this.ctx = document.getElementById("game").getContext("2d");
     }
 
-    animate(percent) {
-        let pct = percent / 100
-    }
-
     render(percent) {
         let quart = Math.PI / 2;
         let PI2 = Math.PI * 2;
